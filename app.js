@@ -361,12 +361,6 @@ const Q = {
     if (!this.messengers.length) { if (msgrs) msgrs.textContent='Выберите способ связи'; ok=false; } else { if (msgrs) msgrs.textContent=''; }
     if (!isPhoneComplete(phoneInput)) { if (phoneErr) phoneErr.textContent='Введите полный номер телефона'; ok=false; } else { if (phoneErr) phoneErr.textContent=''; }
     if (!ok) return;
-    if (isLeadSent()) {
-      this.submitted = true;
-      this._submittedPhone = phone;
-      this.render();
-      return;
-    }
     this.submitted = true;
     this._submittedPhone = phone;
     fetch('handler.php', {
