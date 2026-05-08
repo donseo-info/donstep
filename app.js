@@ -549,7 +549,7 @@ function fireGoal() {
     return;
   }
   markLeadSent();
-  console.log('[goal] firing send_lead, metrikaId=', window._metrikaId);
+  console.log('[goal] firing lead, metrikaId=', window._metrikaId);
   // Яндекс.Метрика
   try {
     if (typeof ym !== 'undefined') {
