@@ -6,8 +6,13 @@ header('Access-Control-Allow-Methods: POST');
 $TG_TOKEN   = '7829202060:AAE-m0M-m0YzwjMm9-jaBtzs8KPO02ilLFI';
 $TG_CHAT_ID = '-4271766800';
 $TG_URL     = "https://api.telegram.org/bot{$TG_TOKEN}/sendMessage";
-$LOG_FILE   = __DIR__ . '/uploads/leads.log';
-$ERR_FILE   = __DIR__ . '/uploads/errors.log';
+$UPLOAD_DIR = __DIR__ . '/uploads';
+$LOG_FILE   = $UPLOAD_DIR . '/leads.log';
+$ERR_FILE   = $UPLOAD_DIR . '/errors.log';
+
+if (!is_dir($UPLOAD_DIR)) {
+    @mkdir($UPLOAD_DIR, 0755, true);
+}
 
 function tg(string $text): array {
     global $TG_URL, $TG_CHAT_ID;
