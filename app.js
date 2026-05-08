@@ -553,7 +553,7 @@ function fireGoal() {
   // Яндекс.Метрика
   try {
     if (typeof ym !== 'undefined') {
-      ym(window._metrikaId, 'reachGoal', 'send_lead');
+      ym(window._metrikaId, 'reachGoal', 'lead');
       console.log('[goal] ym() called');
     } else {
       console.warn('[goal] ym not defined — metrika not loaded');
@@ -563,7 +563,7 @@ function fireGoal() {
   // VK Pixel
   try {
     if (typeof _tmr !== 'undefined') {
-      _tmr.push({ type: 'reachGoal', id: window._vkPixelId || 0, goal: 'send_lead' });
+      _tmr.push({ type: 'reachGoal', id: window._vkPixelId || 0, goal: 'lead' });
       console.log('[goal] _tmr.push() called');
     } else {
       console.warn('[goal] _tmr not defined — vk pixel not loaded');
