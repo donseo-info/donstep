@@ -356,6 +356,7 @@ const Q = {
   submitForm() {
     const phoneInput = this.el.querySelector('#qr-phone');
     const phone = phoneInput?.value || '';
+    const name  = (this.el.querySelector('#qr-name')?.value || '').trim();
     const msgrs = this.el.querySelector('#qr-msgr-err');
     const phoneErr = this.el.querySelector('#qr-phone-err');
     let ok = true;
@@ -370,6 +371,7 @@ const Q = {
       body: JSON.stringify({
         type: 'quiz',
         phone,
+        name,
         messengers: this.messengers,
         age:        this.answers.age,
         level:      this.answers.level,
