@@ -228,11 +228,12 @@ function openConsult() {
   overlay.querySelector('.cm-form').addEventListener('submit', e => {
     e.preventDefault();
     const phone = overlay.querySelector('#cm-phone').value;
+    const name  = overlay.querySelector('#cm-name').value.trim();
     const digits = phone.replace(/\D/g, '');
     const consent = overlay.querySelector('#cm-consent-cb');
     if (!consent?.checked) { overlay.querySelector('#cm-err').textContent = 'Необходимо согласие с политикой конфиденциальности'; return; }
     if (!isPhoneComplete(overlay.querySelector('#cm-phone'))) { overlay.querySelector('#cm-err').textContent = 'Введите полный номер телефона'; return; }
-    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'consult', phone }) })
+    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'consult', phone, name }) })
       .then(r => r.json()).then(d => { if (d.ok) fireGoal(); }).catch(()=>{});
     overlay.querySelector('.cm-modal').innerHTML = `
       <div class="cm-success">
