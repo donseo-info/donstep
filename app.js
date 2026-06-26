@@ -2,6 +2,40 @@
 // app.js — vanilla JS for landing-v2.html
 // ============================================================
 
+// ── Метки трафика (UTM / Яндекс.Директ), first-touch ────────
+// Ловим параметры из URL при первом заходе и храним в localStorage,
+// чтобы исходная рекламная кампания не терялась при повторных визитах.
+// Передаём объект tracking во все заявки -> handler.php -> CRM.
+var TRACKING = (function () {
+  var KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term',
+              'yclid','region','region_name','device_type','block','source'];
+  var STORE_KEY = 'donstep_tracking';
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var incoming = {};
+    KEYS.forEach(function (k) {
+      var v = params.get(k);
+      if (v) incoming[k] = v;
+    });
+
+    var stored = null;
+    try { stored = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+
+    // first-touch: сохраняем только если ещё нет сохранённого и пришли метки
+    if (!stored && Object.keys(incoming).length) {
+      incoming.landing_url = window.location.href;
+      incoming.referrer = document.referrer || '';
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(incoming)); } catch (e) {}
+      stored = incoming;
+    }
+    return stored || {};
+  } catch (e) {
+    return {};
+  }
+})();
+
+function getTracking() { return TRACKING; }
+
 // ── Phone mask ──────────────────────────────────────────────
 function applyPhoneMask(input) {
   input.addEventListener('input', function(e) {
@@ -168,7 +202,7 @@ function initSignup() {
       box.innerHTML = `<div class="signup-success"><h3>Вы уже оставляли заявку</h3><p>Наш менеджер скоро свяжется с вами.</p></div>`;
       return;
     }
-    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'signup', name, email }) })
+    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'signup', name, email, tracking: getTracking() }) })
       .then(r => r.json()).then(d => { if (d.ok) fireGoal(); }).catch(()=>{});
     const box = form.closest('.signup-form');
     box.innerHTML = `<div class="signup-success">
@@ -233,7 +267,7 @@ function openConsult() {
     const consent = overlay.querySelector('#cm-consent-cb');
     if (!consent?.checked) { overlay.querySelector('#cm-err').textContent = 'Необходимо согласие с политикой конфиденциальности'; return; }
     if (!isPhoneComplete(overlay.querySelector('#cm-phone'))) { overlay.querySelector('#cm-err').textContent = 'Введите полный номер телефона'; return; }
-    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'consult', phone, name }) })
+    fetch('handler.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'consult', phone, name, tracking: getTracking() }) })
       .then(r => r.json()).then(d => { if (d.ok) fireGoal(); }).catch(()=>{});
     overlay.querySelector('.cm-modal').innerHTML = `
       <div class="cm-success">
@@ -377,6 +411,7 @@ const Q = {
         level:      this.answers.level,
         directions: this.answers.directions,
         time:       this.answers.time,
+        tracking:   getTracking(),
       })
     }).then(r => r.json()).then(d => { if (d.ok) fireGoal(); }).catch(() => {});
     this.render();
