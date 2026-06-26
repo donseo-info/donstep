@@ -34,7 +34,27 @@ var TRACKING = (function () {
   }
 })();
 
-function getTracking() { return TRACKING; }
+// ClientID Яндекс.Метрики (для офлайн-конверсий в Метрику).
+// getClientID асинхронный — забираем заранее на загрузке в переменную,
+// при сабмите подмешиваем в tracking. ym-очередь работает даже до полной
+// загрузки счётчика, поэтому вызов безопасен.
+var YM_CLIENT_ID = null;
+try {
+  if (typeof window.ym === 'function' && window._metrikaId) {
+    window.ym(window._metrikaId, 'getClientID', function (id) {
+      YM_CLIENT_ID = id || null;
+      try { console.log('[donstep tracking] ym_client_id:', YM_CLIENT_ID); } catch (e) {}
+    });
+  }
+} catch (e) {}
+
+// Возвращает метки для отправки: first-touch (UTM/yclid) + текущий ym_client_id.
+function getTracking() {
+  var out = {};
+  for (var k in TRACKING) { if (Object.prototype.hasOwnProperty.call(TRACKING, k)) out[k] = TRACKING[k]; }
+  if (YM_CLIENT_ID) out.ym_client_id = YM_CLIENT_ID;
+  return out;
+}
 
 // Отладка: вывести пойманные метки в консоль (можно убрать после теста)
 try {
