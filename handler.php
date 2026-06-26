@@ -10,7 +10,7 @@ $TG_URL     = "https://api.telegram.org/bot{$TG_TOKEN}/sendMessage";
 // >>> CRM: настройки интеграции
 $CRM_BASE    = 'https://stat.donstep.com';            // без слэша на конце
 $CRM_API_URL = $CRM_BASE . '/api/leads/create';
-$CRM_API_KEY = '100001';                              // ВРЕМЕННО. После деплоя новой версии CRM — заменить на новый ключ
+$CRM_API_KEY = '66045ee9989d909b0f2306005b336b22dd9e71b553389da8'; // должен совпадать с API_KEY в .env CRM
 $CRM_SOURCE  = 3;                                     // Источник лида: 3 = Контекстная реклама
 // <<< CRM
 
