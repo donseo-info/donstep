@@ -36,6 +36,12 @@ var TRACKING = (function () {
 
 function getTracking() { return TRACKING; }
 
+// Отладка: вывести пойманные метки в консоль (можно убрать после теста)
+try {
+  console.log('[donstep tracking] из URL/localStorage:', TRACKING);
+  console.log('[donstep tracking] query:', window.location.search || '(пусто)');
+} catch (e) {}
+
 // ── Phone mask ──────────────────────────────────────────────
 function applyPhoneMask(input) {
   input.addEventListener('input', function(e) {
